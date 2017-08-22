@@ -44,8 +44,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 {
-	static HDC hdc;
-	static HPEN hPen,hPenOld;
+	HDC hdc;
+	static HPEN hPen;
 	static HBRUSH hBrush;
 	static int DecideToDraw,DecideToDrawSpeed;				/*判断如何绘制*/
 	static int x,y;					/*鼠标位置坐标*/
@@ -59,41 +59,32 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 		case WM_TIMER:
 		{
 			InvalidateRect(hwnd,NULL,TRUE);
-			break;
+			return 0;
 		}
 		case WM_LBUTTONDOWN:
 		{
 			DecideToDraw = TRUE;
 			DecideToDrawSpeed = FALSE;
-			Radii = 1;
+			Radii = 0;
 			x = LOWORD(lParam);
 			y = HIWORD(lParam);
 			SetTimer(hwnd,1,5,NULL);
 			InvalidateRect(hwnd,NULL,TRUE);
-			break;
+			return 0;
 		}
 		case WM_LBUTTONUP:
 		{
 			DecideToDraw = FALSE;
 			DecideToDrawSpeed = TRUE;
-			x = LOWORD(lParam);
-			y = HIWORD(lParam);
 			InvalidateRect(hwnd,NULL,TRUE);
 			KillTimer(hwnd,1);
-			break;
+			return 0;
 		}
 		case WM_SIZE:
 		{
 			cxClient = LOWORD(lParam);
 			cyClient = HIWORD(lParam);
-			break;
-		}
-		case WM_DESTROY:
-		{
-			DeleteObject(hPen);
-			DeleteObject(hBrush);
-			PostQuitMessage(0);
-			break;
+			return 0;
 		}
 		case WM_PAINT:
 		{
@@ -114,20 +105,26 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 			else if(DecideToDrawSpeed)
 			{
 				Ellipse(hdc,x-Radii,y-Radii,x+Radii,y+Radii);
-				Radii += 3;
+				Radii += 2;							//半径每次增长2 
 				if(Radii >= max(cxClient,cyClient))
 				{
 					DecideToDrawSpeed = FALSE;
 				}
-				Sleep(3);
+				Sleep(2);
 				InvalidateRect(hwnd,NULL,TRUE);
 			}
 			DeleteObject(hBrush);
-			EndPaint(hwnd,&ps);
-			break;
-		} 
+			EndPaint(hwnd,&ps); 
+			return 0;
+		}
+		case WM_DESTROY:
+		{
+			DeleteObject(hPen);
+			DeleteObject(hBrush);
+			PostQuitMessage(0);
+			return 0;
+		}
 		default:
 			return DefWindowProc(hwnd, Message, wParam, lParam);
 	}
-	return 0;
 }
