@@ -23,7 +23,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 		MessageBox(NULL,TEXT("很抱歉，注册窗口类失败!"),TEXT("警告"),MB_OK);
 		return 0;
 	}
-	hwnd = CreateWindowEx(WS_EX_DLGMODALFRAME,szAppName,TEXT("Material Design Button"),WS_SIZEBOX|WS_VISIBLE|WS_OVERLAPPEDWINDOW,CW_USEDEFAULT,CW_USEDEFAULT,500,200,NULL,NULL,hInstance,NULL);
+	hwnd = CreateWindowEx(WS_EX_DLGMODALFRAME,szAppName,TEXT("Material Design Button"),WS_OVERLAPPEDWINDOW^WS_THICKFRAME,CW_USEDEFAULT,CW_USEDEFAULT,400,247,NULL,NULL,hInstance,NULL);
 	if(hwnd == NULL)
 	{
 		MessageBox(NULL, "Window Creation Failed!","Error!",MB_ICONEXCLAMATION|MB_OK);
